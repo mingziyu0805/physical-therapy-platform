@@ -1,0 +1,1125 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>运动分析与康复评估平台 | Movement Analysis & Rehabilitation Platform</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #2d5016;
+            --accent: #7cb342;
+            --light: #f1f5e8;
+            --dark: #1a1a1a;
+            --border: #d4e4bc;
+            --success: #558b2f;
+            --warning: #f57f17;
+            --error: #d32f2f;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'Microsoft YaHei', 'PingFang SC', sans-serif;
+            background: linear-gradient(135deg, #f1f5e8 0%, #e8f5e9 100%);
+            color: var(--dark);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        /* 导航栏 */
+        header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--success) 100%);
+            color: white;
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 4px 12px rgba(45, 80, 22, 0.15);
+        }
+
+        nav {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            letter-spacing: -1px;
+            animation: slideDown 0.5s ease-out;
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+            list-style: none;
+        }
+
+        .nav-menu a {
+            color: white;
+            text-decoration: none;
+            font-size: 0.95rem;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .nav-menu a:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .lang-selector {
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .lang-selector:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        /* 主容器 */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+        }
+
+        /* 英雄部分 */
+        .hero {
+            text-align: center;
+            margin-bottom: 4rem;
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--primary), var(--success));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 700;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            color: #555;
+            margin-bottom: 2rem;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        button, .btn {
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 6px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--success));
+            color: white;
+            box-shadow: 0 4px 15px rgba(45, 80, 22, 0.2);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(45, 80, 22, 0.3);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+        }
+
+        .btn-secondary:hover {
+            background: var(--light);
+            transform: translateY(-3px);
+        }
+
+        /* 标签页 */
+        .tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            border-bottom: 2px solid var(--border);
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            background: none;
+            border: none;
+            padding: 1rem 1.5rem;
+            cursor: pointer;
+            font-size: 1rem;
+            color: #999;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+
+        .tab-btn.active {
+            color: var(--primary);
+            border-bottom-color: var(--success);
+        }
+
+        .tab-btn:hover {
+            color: var(--primary);
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* 卡片布局 */
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .card {
+            background: white;
+            border-radius: 8px;
+            padding: 2rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+            border-left: 4px solid var(--accent);
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+        }
+
+        .card h3 {
+            color: var(--primary);
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+        }
+
+        .card p {
+            color: #666;
+            margin-bottom: 1rem;
+        }
+
+        /* 上传区域 */
+        .upload-area {
+            border: 2px dashed var(--border);
+            border-radius: 8px;
+            padding: 3rem;
+            text-align: center;
+            background: rgba(124, 179, 66, 0.05);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .upload-area:hover {
+            border-color: var(--success);
+            background: rgba(124, 179, 66, 0.1);
+        }
+
+        .upload-area.dragover {
+            border-color: var(--success);
+            background: rgba(124, 179, 66, 0.15);
+            transform: scale(1.02);
+        }
+
+        .upload-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            animation: bounce 2s infinite;
+        }
+
+        .upload-area h3 {
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .upload-area p {
+            color: #888;
+        }
+
+        #fileInput {
+            display: none;
+        }
+
+        /* 结果展示 */
+        .result-section {
+            background: white;
+            border-radius: 8px;
+            padding: 2rem;
+            margin-top: 2rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        .result-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+            overflow-x: auto;
+        }
+
+        .result-table th {
+            background: linear-gradient(135deg, var(--primary), var(--success));
+            color: white;
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        .result-table td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .result-table tr:hover {
+            background: var(--light);
+        }
+
+        /* 翻译功能 */
+        .translation-box {
+            background: var(--light);
+            border-radius: 8px;
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+
+        .lang-tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .lang-tab {
+            background: white;
+            border: 2px solid var(--border);
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .lang-tab.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        .lang-tab:hover {
+            border-color: var(--success);
+        }
+
+        .translation-content {
+            display: none;
+            background: white;
+            padding: 1.5rem;
+            border-radius: 4px;
+        }
+
+        .translation-content.active {
+            display: block;
+        }
+
+        /* 页脚 */
+        footer {
+            background: var(--primary);
+            color: white;
+            text-align: center;
+            padding: 3rem 2rem;
+            margin-top: 4rem;
+        }
+
+        footer p {
+            margin: 0.5rem 0;
+        }
+
+        /* 动画 */
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes bounce {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .nav-menu {
+                gap: 1rem;
+            }
+
+            .btn-group {
+                flex-direction: column;
+            }
+
+            button, .btn {
+                width: 100%;
+            }
+
+            .card-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .result-table {
+                font-size: 0.9rem;
+            }
+
+            .result-table th, .result-table td {
+                padding: 0.5rem;
+            }
+        }
+
+        /* 加载动画 */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(45, 80, 22, 0.1);
+            border-radius: 50%;
+            border-top-color: var(--primary);
+            animation: spin 0.6s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* 统计数据展示 */
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, var(--primary), var(--success));
+            color: white;
+            padding: 2rem;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(45, 80, 22, 0.2);
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            font-size: 0.95rem;
+            opacity: 0.9;
+        }
+
+        /* 详情模态框 */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            max-width: 800px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            animation: slideDown 0.3s ease-out;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid var(--border);
+            padding-bottom: 1rem;
+        }
+
+        .modal-header h2 {
+            color: var(--primary);
+            margin: 0;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--primary);
+            cursor: pointer;
+            padding: 0;
+        }
+
+        .close-btn:hover {
+            color: var(--error);
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <header>
+        <nav>
+            <div class="logo">🏥 运动分析平台</div>
+            <ul class="nav-menu">
+                <li><a href="#home">首页</a></li>
+                <li><a href="#analyze">分析</a></li>
+                <li><a href="#data">数据</a></li>
+                <li><a href="#docs">文档</a></li>
+                <select class="lang-selector" id="langSelector">
+                    <option value="zh">中文</option>
+                    <option value="en">English</option>
+                    <option value="ko">한국어</option>
+                    <option value="es">Español</option>
+                    <option value="ja">日本語</option>
+                </select>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- 主容器 -->
+    <div class="container">
+        <!-- 英雄部分 -->
+        <section class="hero">
+            <h1 id="heroTitle">运动分析与康复评估平台</h1>
+            <p id="heroDesc">专业的物理治疗数据分析工具 | 支持关节角度、ROM测量和治疗效果评估</p>
+            <div class="btn-group">
+                <button class="btn btn-primary" onclick="scrollTo('analyze')">开始分析</button>
+                <a href="#docs" class="btn btn-secondary">查看文档</a>
+            </div>
+        </section>
+
+        <!-- 统计数据 -->
+        <div class="stats-container">
+            <div class="stat-card">
+                <div class="stat-value" id="statAnalysis">3</div>
+                <div class="stat-label" id="statAnalysisLabel">分析级别</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="statJoints">3</div>
+                <div class="stat-label" id="statJointsLabel">关节支持</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="statLanguages">5</div>
+                <div class="stat-label" id="statLanguagesLabel">语言支持</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="statFiles">∞</div>
+                <div class="stat-label" id="statFilesLabel">无限文件</div>
+            </div>
+        </div>
+
+        <!-- 主要内容标签页 -->
+        <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab('overview')">概述</button>
+            <button class="tab-btn" onclick="switchTab('analyze')">数据分析</button>
+            <button class="tab-btn" onclick="switchTab('reference')">参考资料</button>
+            <button class="tab-btn" onclick="switchTab('tutorial')">使用教程</button>
+        </div>
+
+        <!-- 概述标签页 -->
+        <div id="overview" class="tab-content active">
+            <div class="card-grid">
+                <div class="card">
+                    <h3>📊 初级分析</h3>
+                    <p>单关节角度分析、ROM计算和运动范围评估。适合基础运动学评估和简单的康复监测。</p>
+                    <button class="btn-primary" onclick="showModal('level1')">了解更多</button>
+                </div>
+                <div class="card">
+                    <h3>🔄 中级分析</h3>
+                    <p>多关节运动学分析、步态事件分析和关节协调性评估。用于全面的生物力学评估。</p>
+                    <button class="btn-primary" onclick="showModal('level2')">了解更多</button>
+                </div>
+                <div class="card">
+                    <h3>📈 高级分析</h3>
+                    <p>治疗前后对比、运动品质评分和统计显著性检验。用于治疗效果评估和进展跟踪。</p>
+                    <button class="btn-primary" onclick="showModal('level3')">了解更多</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 分析标签页 -->
+        <div id="analyze" class="tab-content">
+            <div class="result-section">
+                <h2>📁 上传并分析数据</h2>
+                <p>支持CSV、Excel等数据格式。上传您的运动学数据进行专业分析。</p>
+                
+                <div class="upload-area" id="uploadArea" onclick="document.getElementById('fileInput').click()">
+                    <div class="upload-icon">📤</div>
+                    <h3 id="uploadTitle">点击或拖拽上传文件</h3>
+                    <p id="uploadDesc">支持 CSV, Excel, JSON 格式 | 最大 10MB</p>
+                </div>
+                <input type="file" id="fileInput" accept=".csv,.xlsx,.json" onchange="handleFile(event)">
+
+                <div id="results" style="display: none;">
+                    <h3 style="color: var(--success); margin-top: 2rem;">📊 分析结果</h3>
+                    <div id="resultContent"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 参考资料标签页 -->
+        <div id="reference" class="tab-content">
+            <div class="result-section">
+                <h2>📚 参考资料库</h2>
+                <p>关节运动范围和临床评估参考值</p>
+                
+                <h3 style="margin-top: 2rem; color: var(--primary);">正常关节ROM参考值</h3>
+                <table class="result-table">
+                    <thead>
+                        <tr>
+                            <th id="thJoint">关节</th>
+                            <th id="thMotion">运动</th>
+                            <th id="thRangeEN">ROM 范围</th>
+                            <th id="thNotes">备注</th>
+                        </tr>
+                    </thead>
+                    <tbody id="referenceTable"></tbody>
+                </table>
+
+                <div class="translation-box">
+                    <h3 style="color: var(--primary); margin-bottom: 1rem;">关键术语翻译</h3>
+                    <div class="lang-tabs">
+                        <div class="lang-tab active" onclick="switchLangTab(this, 'zh')">中文</div>
+                        <div class="lang-tab" onclick="switchLangTab(this, 'en')">English</div>
+                        <div class="lang-tab" onclick="switchLangTab(this, 'ko')">한국어</div>
+                    </div>
+                    <div id="zh" class="translation-content active"></div>
+                    <div id="en" class="translation-content"></div>
+                    <div id="ko" class="translation-content"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 教程标签页 -->
+        <div id="tutorial" class="tab-content">
+            <div class="result-section">
+                <h2>🎓 使用教程</h2>
+                
+                <div style="margin: 2rem 0;">
+                    <h3 style="color: var(--primary); margin-bottom: 1rem;">步骤 1: 准备数据</h3>
+                    <p>确保您的数据包含以下列:</p>
+                    <ul style="margin-left: 2rem; margin-top: 1rem;">
+                        <li>时间 (time) - 秒</li>
+                        <li>步态阶段 (gait_phase) - 0-100%</li>
+                        <li>髋关节角度 (hip_angle) - 度</li>
+                        <li>膝关节角度 (knee_angle) - 度</li>
+                        <li>踝关节角度 (ankle_angle) - 度</li>
+                    </ul>
+                </div>
+
+                <div style="margin: 2rem 0;">
+                    <h3 style="color: var(--primary); margin-bottom: 1rem;">步骤 2: 上传文件</h3>
+                    <p>使用上方的上传区域上传您的 CSV 或 Excel 文件。系统会自动验证数据格式。</p>
+                </div>
+
+                <div style="margin: 2rem 0;">
+                    <h3 style="color: var(--primary); margin-bottom: 1rem;">步骤 3: 查看结果</h3>
+                    <p>分析完成后，您将看到详细的数据表格和统计摘要。</p>
+                </div>
+
+                <div style="margin: 2rem 0;">
+                    <h3 style="color: var(--primary); margin-bottom: 1rem;">步骤 4: 导出报告</h3>
+                    <p>点击"下载报告"按钮导出分析结果为PDF格式。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 模态框 -->
+    <div id="detailModal" class="modal" onclick="if(event.target===this) closeModal()">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">详情</h2>
+                <button class="close-btn" onclick="closeModal()">✕</button>
+            </div>
+            <div id="modalBody"></div>
+        </div>
+    </div>
+
+    <!-- 页脚 -->
+    <footer>
+        <p>&copy; 2024 运动分析与康复评估平台 | Movement Analysis & Rehabilitation Platform</p>
+        <p>医疗专业人员专用工具 | Professional Tool for Healthcare Providers</p>
+        <p>📧 联系我们 | <a href="mailto:info@example.com" style="color: #7cb342; text-decoration: none;">info@example.com</a></p>
+    </footer>
+
+    <script>
+        // 语言包
+        const translations = {
+            zh: {
+                heroTitle: '运动分析与康复评估平台',
+                heroDesc: '专业的物理治疗数据分析工具 | 支持关节角度、ROM测量和治疗效果评估',
+                statAnalysisLabel: '分析级别',
+                statJointsLabel: '关节支持',
+                statLanguagesLabel: '语言支持',
+                statFilesLabel: '无限文件',
+                uploadTitle: '点击或拖拽上传文件',
+                uploadDesc: '支持 CSV, Excel, JSON 格式 | 最大 10MB',
+                thJoint: '关节',
+                thMotion: '运动',
+                thRangeEN: 'ROM 范围',
+                thNotes: '备注'
+            },
+            en: {
+                heroTitle: 'Movement Analysis & Rehabilitation Platform',
+                heroDesc: 'Professional physical therapy data analysis tool | Joint angle, ROM measurement and treatment effect assessment',
+                statAnalysisLabel: 'Analysis Levels',
+                statJointsLabel: 'Joint Support',
+                statLanguagesLabel: 'Language Support',
+                statFilesLabel: 'Unlimited Files',
+                uploadTitle: 'Click or drag files to upload',
+                uploadDesc: 'Support CSV, Excel, JSON formats | Max 10MB',
+                thJoint: 'Joint',
+                thMotion: 'Motion',
+                thRangeEN: 'ROM Range',
+                thNotes: 'Notes'
+            },
+            ko: {
+                heroTitle: '운동 분석 및 재활 평가 플랫폼',
+                heroDesc: '전문적인 물리치료 데이터 분석 도구 | 관절 각도, ROM 측정 및 치료 효과 평가',
+                statAnalysisLabel: '분석 수준',
+                statJointsLabel: '관절 지원',
+                statLanguagesLabel: '언어 지원',
+                statFilesLabel: '무제한 파일',
+                uploadTitle: '클릭하거나 파일을 드래그하여 업로드',
+                uploadDesc: 'CSV, Excel, JSON 형식 지원 | 최대 10MB',
+                thJoint: '관절',
+                thMotion: '운동',
+                thRangeEN: 'ROM 범위',
+                thNotes: '비고'
+            },
+            es: {
+                heroTitle: 'Plataforma de Análisis de Movimiento y Rehabilitación',
+                heroDesc: 'Herramienta profesional de análisis de datos de fisioterapia',
+                statAnalysisLabel: 'Niveles de Análisis',
+                statJointsLabel: 'Apoyo Articular',
+                statLanguagesLabel: 'Soporte de Idiomas',
+                statFilesLabel: 'Archivos Ilimitados'
+            },
+            ja: {
+                heroTitle: '運動分析およびリハビリテーション評価プラットフォーム',
+                heroDesc: '専門的な理学療法データ分析ツール',
+                statAnalysisLabel: '分析レベル',
+                statJointsLabel: '関節サポート',
+                statLanguagesLabel: '言語サポート',
+                statFilesLabel: '無制限ファイル'
+            }
+        };
+
+        // 参考数据
+        const referenceData = {
+            zh: [
+                { joint: '髋关节', motion: '屈曲/伸展', range: '120°/20°', notes: '正常步态' },
+                { joint: '膝关节', motion: '屈曲/伸展', range: '140°/0°', notes: '完全伸展' },
+                { joint: '踝关节', motion: '背屈/跖屈', range: '20°/50°', notes: '中立位置' }
+            ],
+            en: [
+                { joint: 'Hip', motion: 'Flexion/Extension', range: '120°/20°', notes: 'Normal gait' },
+                { joint: 'Knee', motion: 'Flexion/Extension', range: '140°/0°', notes: 'Full extension' },
+                { joint: 'Ankle', motion: 'Dorsiflexion/Plantarflexion', range: '20°/50°', notes: 'Neutral position' }
+            ],
+            ko: [
+                { joint: '엉덩이관절', motion: '굴곡/신전', range: '120°/20°', notes: '정상 보행' },
+                { joint: '무릎관절', motion: '굴곡/신전', range: '140°/0°', notes: '완전신전' },
+                { joint: '발목관절', motion: '배굴/족저굴', range: '20°/50°', notes: '중립위치' }
+            ]
+        };
+
+        // 翻译内容
+        const translationContent = {
+            zh: `
+                <strong>关键临床术语:</strong><br>
+                • ROM: 运动范围 (Range of Motion)<br>
+                • 步态周期: 一个完整的步行周期<br>
+                • 初始接触: 足尖与地面的第一次接触<br>
+                • 入息期: 支撑期的初期<br>
+                • 中间支撑期: 支撑期的中间<br>
+                • 摆动期: 腿在空中摆动的阶段
+            `,
+            en: `
+                <strong>Key Clinical Terms:</strong><br>
+                • ROM: Range of Motion<br>
+                • Gait Cycle: One complete walking cycle<br>
+                • Initial Contact: First foot contact with ground<br>
+                • Loading Response: Early stance phase<br>
+                • Mid Stance: Middle of stance phase<br>
+                • Swing Phase: Leg swings in air
+            `,
+            ko: `
+                <strong>주요 임상 용어:</strong><br>
+                • ROM: 운동범위 (Range of Motion)<br>
+                • 보행 사이클: 완전한 걷기 사이클<br>
+                • 초기 접촉: 발이 지면과 처음 닿는 순간<br>
+                • 부하 반응: 입각기의 초기<br>
+                • 중간 입각기: 입각기의 중간<br>
+                • 유각기: 다리가 공중에서 흔들리는 단계
+            `
+        };
+
+        // 初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            updateLanguage('zh');
+            setupDragDrop();
+            loadReferenceData('zh');
+            loadTranslations('zh');
+        });
+
+        // 语言切换
+        document.getElementById('langSelector').addEventListener('change', function(e) {
+            updateLanguage(e.target.value);
+        });
+
+        function updateLanguage(lang) {
+            Object.keys(translations[lang]).forEach(key => {
+                const element = document.getElementById(key);
+                if (element) {
+                    element.textContent = translations[lang][key];
+                }
+            });
+            loadReferenceData(lang);
+            loadTranslations(lang);
+        }
+
+        // 加载参考数据
+        function loadReferenceData(lang) {
+            const table = document.getElementById('referenceTable');
+            table.innerHTML = '';
+            if (referenceData[lang]) {
+                referenceData[lang].forEach(row => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td>${row.joint}</td>
+                        <td>${row.motion}</td>
+                        <td><strong>${row.range}</strong></td>
+                        <td>${row.notes}</td>
+                    `;
+                    table.appendChild(tr);
+                });
+            }
+        }
+
+        // 加载翻译内容
+        function loadTranslations(lang) {
+            const langs = ['zh', 'en', 'ko'];
+            langs.forEach(l => {
+                const element = document.getElementById(l);
+                if (element) {
+                    element.innerHTML = translationContent[l] || '';
+                }
+            });
+        }
+
+        // 拖拽上传
+        function setupDragDrop() {
+            const uploadArea = document.getElementById('uploadArea');
+            uploadArea.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                uploadArea.classList.add('dragover');
+            });
+            uploadArea.addEventListener('dragleave', () => {
+                uploadArea.classList.remove('dragover');
+            });
+            uploadArea.addEventListener('drop', (e) => {
+                e.preventDefault();
+                uploadArea.classList.remove('dragover');
+                handleFile({ target: { files: e.dataTransfer.files } });
+            });
+        }
+
+        // 处理文件上传
+        function handleFile(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const content = e.target.result;
+                try {
+                    // 解析CSV或JSON
+                    let data = [];
+                    if (file.name.endsWith('.csv')) {
+                        data = parseCSV(content);
+                    } else if (file.name.endsWith('.json')) {
+                        data = JSON.parse(content);
+                    }
+
+                    // 显示结果
+                    displayResults(data);
+                } catch (error) {
+                    alert('文件解析错误: ' + error.message);
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        // 解析CSV
+        function parseCSV(content) {
+            const lines = content.trim().split('\n');
+            const headers = lines[0].split(',');
+            const data = [];
+            for (let i = 1; i < lines.length; i++) {
+                const values = lines[i].split(',');
+                const row = {};
+                headers.forEach((header, index) => {
+                    row[header.trim()] = values[index]?.trim();
+                });
+                data.push(row);
+            }
+            return data;
+        }
+
+        // 显示分析结果
+        function displayResults(data) {
+            const resultsDiv = document.getElementById('results');
+            const resultContent = document.getElementById('resultContent');
+
+            if (!data || data.length === 0) {
+                resultContent.innerHTML = '<p style="color: var(--error);">没有数据</p>';
+                resultsDiv.style.display = 'block';
+                return;
+            }
+
+            // 计算统计信息
+            const stats = calculateStats(data);
+
+            let html = `
+                <div class="stats-container">
+                    <div class="stat-card">
+                        <div class="stat-value">${data.length}</div>
+                        <div class="stat-label">数据点</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">${stats.avgROM.toFixed(1)}°</div>
+                        <div class="stat-label">平均ROM</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">${stats.maxAngle.toFixed(1)}°</div>
+                        <div class="stat-label">最大角度</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">${stats.minAngle.toFixed(1)}°</div>
+                        <div class="stat-label">最小角度</div>
+                    </div>
+                </div>
+
+                <h3 style="margin-top: 2rem; color: var(--primary);">原始数据表</h3>
+                <table class="result-table">
+                    <thead>
+                        <tr>
+                            ${Object.keys(data[0]).map(key => `<th>${key}</th>`).join('')}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${data.slice(0, 10).map(row => 
+                            `<tr>${Object.values(row).map(val => `<td>${val}</td>`).join('')}</tr>`
+                        ).join('')}
+                    </tbody>
+                </table>
+                <p style="text-align: center; color: #999; margin-top: 1rem;">显示前 10 行 (共 ${data.length} 行)</p>
+            `;
+
+            resultContent.innerHTML = html;
+            resultsDiv.style.display = 'block';
+        }
+
+        // 计算统计信息
+        function calculateStats(data) {
+            let allAngles = [];
+            Object.keys(data[0]).forEach(key => {
+                if (key.includes('angle')) {
+                    allAngles = allAngles.concat(data.map(row => parseFloat(row[key]) || 0));
+                }
+            });
+
+            const maxAngle = Math.max(...allAngles);
+            const minAngle = Math.min(...allAngles);
+            const avgROM = maxAngle - minAngle;
+
+            return { maxAngle, minAngle, avgROM };
+        }
+
+        // 切换标签页
+        function switchTab(tabName) {
+            // 隐藏所有标签页
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            // 移除所有标签按钮的active类
+            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+            // 显示选定的标签页
+            document.getElementById(tabName).classList.add('active');
+            // 给对应的按钮添加active类
+            event.target.classList.add('active');
+        }
+
+        // 切换语言标签页
+        function switchLangTab(element, lang) {
+            document.querySelectorAll('.lang-tab').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.translation-content').forEach(el => el.classList.remove('active'));
+            element.classList.add('active');
+            document.getElementById(lang).classList.add('active');
+        }
+
+        // 显示模态框
+        function showModal(level) {
+            const modal = document.getElementById('detailModal');
+            const modalTitle = document.getElementById('modalTitle');
+            const modalBody = document.getElementById('modalBody');
+
+            const content = {
+                level1: {
+                    title: '初级分析 - 单关节角度分析',
+                    body: `
+                        <h3>功能特点:</h3>
+                        <ul style="margin-left: 2rem;">
+                            <li>单关节角度测量与追踪</li>
+                            <li>ROM(运动范围)自动计算</li>
+                            <li>与正常值对比评估</li>
+                            <li>步态周期分析</li>
+                        </ul>
+                        <h3 style="margin-top: 1.5rem;">适用场景:</h3>
+                        <p>基础康复监测、简单的运动评估、初级患者筛选</p>
+                        <h3 style="margin-top: 1.5rem;">输出结果:</h3>
+                        <p>关节角度曲线图、ROM统计表、正常值对比图表</p>
+                    `
+                },
+                level2: {
+                    title: '中级分析 - 多关节运动学',
+                    body: `
+                        <h3>功能特点:</h3>
+                        <ul style="margin-left: 2rem;">
+                            <li>3个关节同时分析(髋、膝、踝)</li>
+                            <li>关节协调性评估</li>
+                            <li>步态事件识别</li>
+                            <li>生物力学模式识别</li>
+                        </ul>
+                        <h3 style="margin-top: 1.5rem;">适用场景:</h3>
+                        <p>全面运动评估、步态异常诊断、康复进展监测</p>
+                        <h3 style="margin-top: 1.5rem;">输出结果:</h3>
+                        <p>多关节角度曲线、ROM对比图、步态模式分析图</p>
+                    `
+                },
+                level3: {
+                    title: '高级分析 - 治疗效果评估',
+                    body: `
+                        <h3>功能特点:</h3>
+                        <ul style="margin-left: 2rem;">
+                            <li>治疗前后对比分析</li>
+                            <li>运动品质评分系统</li>
+                            <li>统计显著性检验</li>
+                            <li>临床进展报告</li>
+                        </ul>
+                        <h3 style="margin-top: 1.5rem;">适用场景:</h3>
+                        <p>治疗效果评估、患者进展跟踪、医学研究、临床决策支持</p>
+                        <h3 style="margin-top: 1.5rem;">输出结果:</h3>
+                        <p>综合评估仪表板、统计对比报告、品质评分卡、改善百分比</p>
+                    `
+                }
+            };
+
+            if (content[level]) {
+                modalTitle.textContent = content[level].title;
+                modalBody.innerHTML = content[level].body;
+                modal.classList.add('active');
+            }
+        }
+
+        // 关闭模态框
+        function closeModal() {
+            document.getElementById('detailModal').classList.remove('active');
+        }
+
+        // 平滑滚动
+        function scrollTo(sectionId) {
+            const section = document.getElementById(sectionId);
+            if (section) {
+                section.scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+
+        // 点击模态框外部关闭
+        window.onclick = function(event) {
+            const modal = document.getElementById('detailModal');
+            if (event.target === modal) {
+                closeModal();
+            }
+        }
+    </script>
+</body>
+</html>
