@@ -1,0 +1,24 @@
+title: Movement Analysis & Rehabilitation Platform
+description: Professional physical therapy data analysis platform with multi-language support
+theme: jekyll-theme-slate
+baseurl: "/physical-therapy-platform"
+url: "https://your-username.github.io"
+
+# 语言设置
+languages:
+  - zh
+  - en
+  - ko
+  - es
+  - ja
+
+# 社交媒体
+social:
+  email: your-email@example.com
+  github_username: your-username
+
+# 构建设置
+markdown: kramdown
+plugins:
+  - jekyll-feed
+  - jekyll-sitemap
